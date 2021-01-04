@@ -20,6 +20,9 @@ func main() {
 		})
 	})
 
+
+	r.GET("/file/:bucket/:id", controller.DownloadFile)
+
 	r.POST("/login", controller.Login)
 	r.POST("/signup", controller.SignUp)
 
