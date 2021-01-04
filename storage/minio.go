@@ -5,6 +5,7 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -62,4 +63,18 @@ func Upload(bucketName, fileName string, file io.Reader) (string, error) {
 		return "", err
 	}
 	return fileName, nil
+}
+
+func Download(bucketName, fileID string) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+	object, err := minioClient.GetObject(ctx, bucketName, fileID, minio.GetObjectOptions{})
+	if err != nil {
+		return nil, err
+	}
+	b, err := ioutil.ReadAll(object)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }
